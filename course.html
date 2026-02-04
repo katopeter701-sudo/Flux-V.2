@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Growvy | Player</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">Growvy</div>
+        <a href="index.html" class="nav-link">🏠 Home</a>
+    </div>
+    <div class="main">
+        <h1 id="ctitle"></h1>
+        <div id="video-area" style="background:black; aspect-ratio:16/9; border-radius:1rem; overflow:hidden"></div>
+        <h2 style="margin-top:2rem">Course Curriculum</h2>
+        <div id="curriculum"></div>
+    </div>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const name = params.get('name');
+        document.getElementById('ctitle').innerText = name;
+
+        async function load() {
+            const { data } = await _supabase.from('materials').select('*').eq('course_program', name).order('week');
+            document.getElementById('video-area').innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${data[0].video_url.split('v=')[1]}" frameborder="0" allowfullscreen></iframe>`;
+            document.getElementById('curriculum').innerHTML = data.map(m => `
+                <div style="background:white; padding:1.25rem; border:1px solid #eee; margin-bottom:0.5rem; border-radius:0.5rem; display:flex; justify-content:space-between">
+                    <span>Week ${m.week}: ${m.course_name}</span>
+                    <a href="${m.notes_url}" target="_blank" style="color:#6366f1">PDF Notes</a>
+                </div>
+            `).join('');
+        }
+        load();
+    </script>
+</body>
+</html>
