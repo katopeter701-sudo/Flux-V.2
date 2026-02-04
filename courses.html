@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Growvy | My Courses</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">Growvy</div>
+        <a href="index.html" class="nav-link">🏠 Home</a>
+        <a href="courses.html" class="nav-link active">📚 My Courses</a>
+    </div>
+    <div class="main">
+        <h1>My Course Progress</h1>
+        <div class="st-card" style="padding:0">
+            <table style="width:100%; border-collapse:collapse">
+                <thead style="background:#f9fafb; text-align:left">
+                    <th style="padding:1rem">Course Name</th>
+                    <th style="padding:1rem">Progress</th>
+                    <th style="padding:1rem">Action</th>
+                </thead>
+                <tbody id="progress-list"></tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        // Supabase Logic...
+        async function load() {
+            const { data } = await _supabase.from('materials').select('course_program');
+            const unique = [...new Set(data.map(i => i.course_program))];
+            document.getElementById('progress-list').innerHTML = unique.map(u => `
+                <tr style="border-top:1px solid #eee">
+                    <td style="padding:1rem"><b>${u}</b></td>
+                    <td style="padding:1rem">75 of 150 lessons (50%)</td>
+                    <td style="padding:1rem"><a href="course.html?name=${u}" style="color:#6366f1">View Course</a></td>
+                </tr>
+            `).join('');
+        }
+        load();
+    </script>
+</body>
+</html>
