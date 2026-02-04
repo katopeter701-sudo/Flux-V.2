@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Growvy | Home</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">Growvy</div>
+        <a href="index.html" class="nav-link active">🏠 Home</a>
+        <a href="courses.html" class="nav-link">📚 My Courses</a>
+        <a href="assignments.html" class="nav-link">📝 Assignments</a>
+        <a href="resources.html" class="nav-link">📂 Resources</a>
+        <a href="admin.html" class="nav-link" style="margin-top:auto">⚙️ Admin</a>
+    </div>
+    <div class="main">
+        <h1>Welcome back, Tareq</h1>
+        <p style="color:#6b7280">Continue where you left off today.</p>
+        <h2 style="margin-top:2rem">Top Courses in this month</h2>
+        <div id="course-grid" class="grid"></div>
+    </div>
+    <script>
+        const SUPABASE_URL = "https://uxtmgdenwfyuwhezcleh.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_1BIwMEH8FVDv7fFafz31uA_9FqAJr0-";
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function load() {
+            const { data } = await _supabase.from('materials').select('course_program, image_url');
+            const unique = [...new Map(data.map(item => [item.course_program, item])).values()];
+            document.getElementById('course-grid').innerHTML = unique.map(c => `
+                <div class="st-card" onclick="location.href='course.html?name=${encodeURIComponent(c.course_program)}'">
+                    <img src="${c.image_url}">
+                    <div class="st-card-body">
+                        <h3>${c.course_program}</h3>
+                        <div style="height:6px; background:#eee; border-radius:3px;"><div style="width:50%; height:100%; background:#6366f1; border-radius:3px;"></div></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        load();
+    </script>
+</body>
+</html>
